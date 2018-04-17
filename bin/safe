@@ -1,2 +1,16 @@
 #!/usr/local/bin/ruby
-require_relative ../rlib/safe.rb
+require 'wikk_configuration' #json to class with accessor methods
+require_relative '../rlib/safe.rb'
+
+conf_file = "#{File.expand_path(File.dirname(__FILE__))}/../conf/conf.json"
+@conf = WIKK::Configuration.new(conf_file)
+
+safe = SAFE::Safe.new(filename: @conf.db_filename, conf: @conf)
+
+
+#safe.save(key: "1", value: "flabberty")
+#safe.save(key: "2", value: "gabberty")
+
+safe.each_key do |k|
+  puts "#{k} '#{safe.get(key: k)}'"
+end
