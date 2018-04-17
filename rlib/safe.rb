@@ -26,6 +26,10 @@ module SAFE
       @aes.decrypt(@db[key], true)
     end
 
+    def get_raw(key:)
+      @db[key]
+    end
+
     #iterate over keys
     # @yield key [String]
     def each_key
