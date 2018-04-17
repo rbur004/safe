@@ -8,7 +8,7 @@ module SAFE
     # @param filename [String] db database filename
     # @param conf [Wikk_Conf]
     def initialize(filename:, conf:)
-      @db = DBM.open(filename, 600, DBM::CREATRW)
+      @db = DBM.open(filename, 0600, DBM::WRCREAT)
       @aes = WIKK::AES_256.new(conf.key, conf.iv)
     end
 
@@ -16,7 +16,7 @@ module SAFE
     # @param key [String] password entry identity
     # @param value [String] password or string to encrypt and Save
     def save(key:, value:)
-      @db[key] = @aes2.cipher_to_s(value)
+      @db[key] = @aes.cipher_to_s(value)
     end
 
     #Recover a password
@@ -31,4 +31,5 @@ module SAFE
     def each_key
       @db.each_key { |k| yield k }
     end
+  end
 end
