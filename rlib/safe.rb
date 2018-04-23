@@ -1,5 +1,5 @@
 #!/usr/local/bin/ruby
-require 'wikk_aes_256'
+require_relative 'aes.rb'
 require 'dbm'
 
 #Playing with DBM, creating a key, encrypted value database
@@ -9,7 +9,7 @@ module SAFE
     # @param conf [Wikk_Conf]
     def initialize(filename:, conf:)
       @db = DBM.open(filename, 0600, DBM::WRCREAT)
-      @aes = WIKK::AES_256.new(conf.key, conf.iv)
+      @aes = AES_256.new #(conf.key, conf.iv)
     end
 
     #Save a password in the database
@@ -23,7 +23,8 @@ module SAFE
     # @param key [String] password entry identity
     # @return [String] password
     def get(key:)
-      @aes.decrypt(@db[key], true)
+      iv, text = @db[key].split('$')
+      @aes.decrypt(encrypted_source: text, password: @password, iv: iv, base64_source: true)
     end
 
     def get_raw(key:)
